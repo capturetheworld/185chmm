@@ -14,9 +14,9 @@ def frequency(opcode_file, family_count):
 parent_dir="malicia/"
 for root, dirs, files in os.walk(parent_dir, topdown=False):
    family_count={}
-   print("=================================")
+   print("===================================================================")
    print("ANALYZING FAMILY:", root)
-   print("=================================")
+   print(". . . . . . . . . . . . . . . . .")
    for name in files:
       full_path=os.path.join(root, name)
       #print(full_path)
@@ -24,9 +24,10 @@ for root, dirs, files in os.walk(parent_dir, topdown=False):
         family_count=frequency(full_path, family_count)
 
    print(len(files), " FILES ANALYZED IN THIS FAMILY")
+   print(". . . . . . . . . . . . . . . . .")
 
    # THE FINAL DICTIONARY COUNT FOR EACH FAMILY
    sorted_final_family={}
-   for k in sorted(family_count,key=family_count.get, reverse=True)
+   for k in sorted(family_count,key=family_count.get, reverse=True):
      sorted_final_family[k]=family_count[k]
    print(sorted_final_family)
