@@ -73,9 +73,9 @@ for root, dirs, files in os.walk(parent_dir, topdown=False):
     for opcode in truncated_opcode_family:
       if opcode in symbol_list:
         symbolized_opcode[symbol_list.index(opcode)+1] = truncated_opcode_family[opcode]
-        print(symbolized_opcode)
+        # print(symbolized_opcode)
       else:
         symbolized_opcode[opcode] = truncated_opcode_family[opcode]
-        print(symbolized_opcode)
+        # print(symbolized_opcode)
     print(symbolized_opcode)
 
