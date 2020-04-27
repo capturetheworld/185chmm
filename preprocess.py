@@ -1,24 +1,25 @@
 import os
 
-for i in os.walk('malicia/'):
-    print(i[0])
-    for k in os.walk(i[0]):
-      print(k[2])
-#directory_name="malicia/zeroaccess/fd6b61857f59334e95aa12c9336425834cd404e8.asm.txt"
+def frequency(opcode_file):
+  f=open(opcode_file, "r")
+  lines=f.readlines()
+  op_codes={}
+  for l in lines:
+    if l.strip() not in op_codes.keys():
+      op_codes[l.strip()]=1
+    else:
+      op_codes[l.strip()]+=1
+  print(op_codes)
 
-#parent_dir="malicia/"
 
-
-#f=open(directory_name, "r")
-#lines=f.readlines()
-
-#op_codes={}
-
-#for l in lines:
-  #if l.strip() not in op_codes.keys():
-    #op_codes[l.strip()]=1
-  #else:
-    #op_codes[l.strip()]+=1
-
-#print(op_codes)
+parent_dir="malicia/"
+for root, dirs, files in os.walk(parent_dir, topdown=False):
+   print("=================================")
+   print("ANALYZING FAMILY:", root)
+   print("=================================")
+   for name in files:
+      full_path=os.path.join(root, name)
+      print(full_path)
+      if ".txt" in name:
+        frequency(full_path)
 
