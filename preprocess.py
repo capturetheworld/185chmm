@@ -10,6 +10,8 @@ def frequency(opcode_file):
     else:
       op_codes[l.strip()]+=1
   print(op_codes)
+  sorted_ops = sorted(op_codes,key=op_codes.get, reverse=True)
+  print('SORTED OPS: ', sorted_ops)
 
 
 parent_dir="malicia/"
