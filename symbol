@@ -1,0 +1,1 @@
+['mov', 'push', 'add', 'call', 'cmp', 'jmp', 'xor', 'pop', 'jz', 'jnz', 'lea', 'sub', 'test', 'retn', 'or', 'and', 'inc', 'nop', 'dec', 'shr', 'movzx', 'jb', 'sbb', 'adc', 'shl', 'leave', 'imul', 'jnb', 'jbe', 'discarded']

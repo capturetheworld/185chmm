@@ -47,7 +47,10 @@ for root, dirs, files in os.walk(parent_dir, topdown=False):
     # TRUNCATE
     truncated_opcode_family = dict(
         itertools.islice(sorted_final_family.items(), 29))
-    discarded_opcode_family = dict(
+
+    print(truncated_opcode_family)
+
+    """discarded_opcode_family = dict(
         itertools.islice(sorted_final_family.items(), 29, None))
     total = 0
     for opcode, occurrence in discarded_opcode_family.items():
@@ -78,4 +81,4 @@ for root, dirs, files in os.walk(parent_dir, topdown=False):
         symbolized_opcode[opcode] = truncated_opcode_family[opcode]
         # print(symbolized_opcode)
     print(symbolized_opcode)
-
+"""
