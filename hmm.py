@@ -20,6 +20,12 @@ class hmmAlphaBeta:
     return alpha
 
 # TODO: Translate betaPass next
+  def betaPass(self, observation, a, b, pi):
+    N=len(a)
+    T=len(observation)
+
+    beta=[N][T]
+    return beta
 
 def main():
   # States of Markov Process
