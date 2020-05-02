@@ -18,6 +18,8 @@ def frequency(opcode_file, family_count):
 
 
 parent_dir = "malicia/"
+csv=[]
+f=open("opcode_rates.csv","w+")
 for root, dirs, files in os.walk(parent_dir, topdown=False):
     family_count = {}
     print(
@@ -35,45 +37,39 @@ for root, dirs, files in os.walk(parent_dir, topdown=False):
 
     # THE FINAL DICTIONARY COUNT FOR EACH FAMILY
     sorted_final_family = {}
+    total_sum=0
     for k in sorted(family_count, key=family_count.get, reverse=True):
         sorted_final_family[k] = family_count[k]
+        total_sum+=family_count[k]
+
     print(sorted_final_family)
+    print("\n")
+    # generate the averages
+    averages = {}
+    for k in sorted(family_count, key=family_count.get, reverse=True):
+        averages[k] = str(round(family_count[k]/total_sum*100,2)) + "%"
 
-    # TRUNCATE
-    truncated_opcode_family = dict(
-        itertools.islice(sorted_final_family.items(), 29))
+    print(averages)
 
-    print(truncated_opcode_family)
+    scale=0.0
+    row=""
+    # LET'S GRAB THE DATA OF THE SYMBOL LIST ONLY
+    for k in symbol_list:
+       # discarded will be all k added up, then subtracted out of 100.00
+       # because it represents all the leftover
 
-    """discarded_opcode_family = dict(
-        itertools.islice(sorted_final_family.items(), 29, None))
-    total = 0
-    for opcode, occurrence in discarded_opcode_family.items():
-        total = total + occurrence
+       if k in averages.keys():
+           row+=(averages[k]+",")
+           scale+=float(averages[k][:-1])
+       else:
+         if k=="discarded":
+           row+=(str(round(100.00-scale,2)) + "%,")
+         else:
+           #print(k+" is not in this family")
+           row+="0.0%,"
+    print(row[:-1])
+    csv.append(root+","+row[:-1]+"\n")
 
-    # print(total)
-    truncated_opcode_family[
-        'discarded'] = total  # add the discarded sum to the truncated list
-    print("length is correct: ", len(truncated_opcode_family) is 30)
-
-    print(truncated_opcode_family)
-    # print(discarded_opcode_family)
-
-    # create a list for the first time
-    # if first_time:
-    #     symbol_list = list(truncated_opcode_family.keys())
-    #     first_time = False
-    #
-    # print(symbol_list)
-
-    symbolized_opcode = {}
-
-    for opcode in truncated_opcode_family:
-      if opcode in symbol_list:
-        symbolized_opcode[symbol_list.index(opcode)+1] = truncated_opcode_family[opcode]
-        # print(symbolized_opcode)
-      else:
-        symbolized_opcode[opcode] = truncated_opcode_family[opcode]
-        # print(symbolized_opcode)
-    print(symbolized_opcode)
-"""
+for row in csv:
+  f.write(row)
+f.close()
