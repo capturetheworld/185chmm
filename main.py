@@ -49,10 +49,11 @@ def main():
 
   # Observation Sequence
   observation=['A','B','3','2','T','R','8','4','J','W','1','5','X']
+  T=len(observation)
 
   # Hidden Markov Model
   model=hmmAlphaBeta()
-  print(model.alphaPass(observation, A, B, pi))
+  #print(model.alphaPass(observation, A, B, pi))
   #hmm.betaPass(observation, a, b, pi)
 
 main()
