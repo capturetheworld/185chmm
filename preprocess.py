@@ -3,7 +3,10 @@ import itertools
 
 first_time = True
 
-symbol_list = ['mov', 'push', 'add', 'call', 'cmp', 'jmp', 'xor', 'pop', 'jz', 'jnz', 'lea', 'sub', 'test', 'retn', 'or', 'and', 'inc', 'nop', 'dec', 'shr', 'movzx', 'jb', 'sbb', 'adc', 'shl', 'leave', 'imul', 'jnb', 'jbe', 'discarded']
+symbol_list = ['mov', 'push', 'add', 'call', 'cmp', 'jmp', 'xor',
+               'pop', 'jz', 'jnz', 'lea', 'sub', 'test', 'retn', 'or',
+               'and', 'inc', 'nop', 'dec', 'shr', 'movzx', 'jb', 'sbb', 'adc',
+               'shl', 'leave', 'imul', 'jnb', 'jbe', 'discarded']
 
 def frequency(opcode_file, family_count):
     f = open(opcode_file, "r")

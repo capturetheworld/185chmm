@@ -99,7 +99,7 @@ public class HmmAlphaBeta {
 
         pi[0] = 0.6;
         pi[1] = 0.4;
-        
+
         int[] observation = new int[4];
         observation[0] = 0;
         observation[1] = 1;
