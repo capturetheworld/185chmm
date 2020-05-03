@@ -54,6 +54,6 @@ def main():
   # Hidden Markov Model
   model=hmmAlphaBeta()
   #print(model.alphaPass(observation, A, B, pi))
-  #hmm.betaPass(observation, a, b, pi)
+  #print(model.betaPass(observation, A, B, pi))
 
 main()
