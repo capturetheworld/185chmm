@@ -4,6 +4,7 @@ import numpy as np
 
 class hmmAlphaBeta:
     def alpha_pass(self, observation, a, b, pi):
+
         N = len(a)
         T = len(observation)
 
@@ -25,15 +26,17 @@ class hmmAlphaBeta:
 
     # Betapass
     def beta_pass(self, o, a, b, pi):
+        print("B IS", b)
+        print(b.keys())
         number_of_states = len(a)
 
         t = len(o)
         # print(t)
         # print(number_of_states)
 
-        print("O IS", o)
-        print("A IS", a)
-        print("B IS", b)
+        # print("O IS", o)
+        # print("A IS", a)
+        # print("B IS", b)
 
         beta = np.zeros((number_of_states, t))
         # print(beta)
@@ -79,7 +82,7 @@ def main():
     model.beta_pass(observation, a, b, pi)
 
     # Hidden Markov Model
-    model=hmmAlphaBeta()
+    model = hmmAlphaBeta()
     print(model.alphaPass(observation, a, b, pi))
     print(model.betaPass(observation, a, b, pi))
 
