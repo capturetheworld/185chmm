@@ -82,7 +82,9 @@ def main():
     model.beta_pass(observation, a, b, pi)
 
     # Hidden Markov Model
+
     model = hmmAlphaBeta()
+
     print(model.alphaPass(observation, a, b, pi))
     print(model.betaPass(observation, a, b, pi))
 
