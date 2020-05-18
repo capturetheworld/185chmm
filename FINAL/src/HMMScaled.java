@@ -12,25 +12,39 @@ public class HMMScaled {
     private static double[] pi = new double[N]; //OUTPUT initial state distribution
     private static double[][] alpha_pass;
     private static double[][] beta_pass;
-    public static int iters = 0;
-    public static int maxiters = 3;
-    public static int oldLogProb = -1000000;
+    private static int iters = 0;
+    private static int maxiters = 21;
+    private static int oldLogProb = -1000000;
+    private static double[] logProbList = new double[maxiters+1];
 
-    public static void printPI(){
-        System.out.print(">>>>>>>>>>FINAL PI IS>>>>>>\n");
-        for (double v : pi) System.out.print("[" + v + " " + "]");
-        System.out.println(" ");
+    public static void print(String match){
+        switch (match) {
+            case "PI":
+                System.out.print(">>>>>>>>>>FINAL PI IS>>>>>>\n");
+                for (double v : pi) System.out.print("[" + v + " " + "]");
+                System.out.println(" ");
+                break;
+            case "A":
+                System.out.println(" ");
+                System.out.println(">>>>>>>>>>FINAL A IS>>>>>>");
+                System.out.println(Arrays.deepToString(A).replace("], ", "]\n"));
+                break;
+            case "B":
+                System.out.println(" ");
+                System.out.println(">>>>>>>>>>FINAL B IS>>>>>>");
+                System.out.println(Arrays.deepToString(B).replace("], ", "]\n"));
+                break;
+            case "LOG":
+                System.out.println(" ");
+                System.out.println(">>>>>>>>>>FINAL LOG IS>>>>>>");
+                System.out.println("[");
+                for (double v : logProbList) System.out.println("" + v + " " + ",");
+                System.out.println("]");
+                break;
+        }
+
     }
-    public static void printA(){
-        System.out.println(" ");
-        System.out.println(">>>>>>>>>>FINAL A IS>>>>>>");
-        System.out.println(Arrays.deepToString(A).replace("], ", "]\n"));
-    }
-    public static void printB(){
-        System.out.println(" ");
-        System.out.println(">>>>>>>>>>FINAL B IS>>>>>>");
-        System.out.println(Arrays.deepToString(B).replace("], ", "]\n"));
-    }
+
 
 
 
@@ -53,8 +67,8 @@ public class HMMScaled {
 
 
             System.out.println("\n ------------------ALPHA PASS----------------------");
-           // hmm.printA();
-            // hmm.printB();
+//            hmm.printA();
+//             hmm.printB();
             alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
 
             System.out.println("ALPHA ARRAY:\n" + Arrays.deepToString(alpha_pass).replace("], ", "]\n"));
@@ -73,19 +87,19 @@ public class HMMScaled {
             System.out.println("\n ---------------AFTER GAMMA PASS------------------");
             hmm.updatelogProb(); //recalculate log prob
 
-            hmm.printA();
-            hmm.printB();
-            hmm.printPI();
+//            hmm.printA();
+//            hmm.printB();
+//            hmm.printPI();
 
             iters++;
+            logProbList[iters] = hmm.getlogProb();
            // System.out.println(iters<maxiters);
            // System.out.println(hmm.getlogProb()>oldLogProb);
 
         }
 
         A = hmm.getUpdatedA(); B = hmm.getUpdatedB(); pi = hmm.getUpdatedpi();
-        printPI(); printA(); printB();
-
+        print("PI"); print("A"); print("B");print("LOG");
 
     }
 
@@ -99,12 +113,13 @@ class HMM {
     private double[][] updatedB; //observation matrix
     private double[] updatedpi; //initial state distribution
     private double[] c; //initialize c - scaling factor
-    private double logProb = 0;
-    int T;
     private double[][] gamma ;
     private double[][][] digamma;
     double[][] alpha_array;
     double[][] beta_array;
+    private double logProb = 0;
+    int T;
+
 
 
 
@@ -125,23 +140,18 @@ class HMM {
 
     }
 
-    public double[][] getUpdatedA(){
-        return updatedA;
-    }
-    public double[][] getUpdatedB(){
-        return updatedB;
-    }
-    public double[] getUpdatedpi(){
-        return updatedpi;
-    }
+    public double[][] getUpdatedA(){ return updatedA; }
+    public double[][] getUpdatedB(){ return updatedB; }
+    public double[] getUpdatedpi(){ return updatedpi; }
     public double getlogProb(){
         return logProb;
     }
-    public double[][] getgamma(){
-        return gamma;
-    }
+    public double[][] getgamma(){ return gamma; }
     public double[][][] getdigamma(){
         return digamma;
+    }
+    public double getLogProb(){
+        return logProb;
     }
 
     public  void initalize(){
@@ -290,7 +300,7 @@ class HMM {
 
     public void gamma_reestimate(int[] O) {
         System.out.println("REESTIMATE");
-        printPI(); printA(); printB();
+        //printPI(); printA(); printB();
         //re-estimate pi
         for (int i = 0; i < N; i++) {
             this.updatedpi[i] = this.gamma[0][i];
@@ -315,8 +325,8 @@ class HMM {
                 double numer = 0;
                 double denom = 0;
                 for (int t = 0; t <= T-1; t++) {
-                    System.out.println("OBSERVATION " + O[t]);
-                    System.out.println("K IS " + k);
+                    //System.out.println("OBSERVATION " + O[t]);
+                    //System.out.println("K IS " + k);
                     if (O[t] == k) {
                         numer = numer + this.gamma[t][j];
                        System.out.println("numer2 " + numer);
@@ -326,7 +336,7 @@ class HMM {
                 }
                 //System.out.println("B BEFORE " + this.updatedB[j][k]);
                 this.updatedB[j][k] = numer/denom;
-                System.out.println("B AFTER " + this.updatedB[j][k]);
+                //System.out.println("B AFTER " + this.updatedB[j][k]);
             }
         }
         //printPI(); printA(); printB();
@@ -375,21 +385,7 @@ class HMM {
        this.logProb = -this.logProb;
     }
 
-    public void printPI(){
-        System.out.print(">>>>>>>>>>HMM PI IS>>>>>>\n");
-        for (double v : this.updatedpi) System.out.print("[" + v + " " + "]");
-        System.out.println(" ");
-    }
-    public void printA(){
-        System.out.println(" ");
-        System.out.println(">>>>>>>>>>HMM A IS>>>>>>");
-        System.out.println(Arrays.deepToString(this.updatedA).replace("], ", "]\n"));
-    }
-    public void printB(){
-        System.out.println(" ");
-        System.out.println(">>>>>>>>>>HMM B IS>>>>>>");
-        System.out.println(Arrays.deepToString(this.updatedB).replace("], ", "]\n"));
-    }
+
 
 
 
