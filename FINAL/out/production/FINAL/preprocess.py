@@ -19,7 +19,7 @@ def frequency(opcode_file, family_count):
 def join_together(opcode_file):
     opened_file = open(opcode_file, 'r')
     # writing_file = open('output/USELESS.txt', 'a')
-    write_symbols = open('output/CLUSTER912343210.txt', 'a')
+    write_symbols = open('output/zeroaccess.txt', 'a')
     lines = opened_file.read().splitlines()
     for line in lines:
         # writing_file.write(str(line)+'\n')
@@ -35,7 +35,7 @@ def join_together(opcode_file):
 
 
 def print_out():
-    f = open('output/CLUSTER912343210.csv', 'w+')
+    f = open('output/zeroaccess.csv', 'w+')
     for opcode in truncated_opcode_family:
         f.write(str(opcode) + ',')
     f.write('\n')
@@ -47,7 +47,7 @@ def print_out():
     f.close()
 
 
-parent_dir = 'malicia/CLUSTER912343210'
+parent_dir = 'malicia/zeroaccess'
 for (root, dirs, files) in os.walk(parent_dir, topdown=False):
     family_count = {}
     print ('===================================================================')

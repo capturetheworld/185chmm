@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.lang.Math;
 import java.io.File;
@@ -8,7 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.util.List;
-import java.util.ArrayList;
+import java.io.File;  // Import the File class
+
+
 
 
 
@@ -60,6 +63,7 @@ public class HMMScaled {
 
 
     public static void main(String[] args) throws IOException {
+        PrintStream o = new PrintStream(new File("src/output/HMM-CLUSTER912343210.txt"));
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
@@ -69,12 +73,12 @@ public class HMMScaled {
         List<String> stringList = Files.readAllLines(filePath, charset);
         String[] stringArray = stringList.toArray(new String[]{});
 
-        int[] O = new int[stringArray.length/2+1]; //observation sequence
+        int[] O = new int[stringArray.length/2]; //observation sequence
 
 
         System.out.println(stringArray.length);
 
-        for(int i = 0; i<=stringArray.length/2;i++){
+        for(int i = 0; i<stringArray.length/2;i++){
             O[i] = Integer.parseInt(stringArray[i]);
         }
 
@@ -124,8 +128,64 @@ public class HMMScaled {
         }
 
         A = hmm.getUpdatedA(); B = hmm.getUpdatedB(); pi = hmm.getUpdatedpi();
-        print("PI"); print("A"); print("B");print("LOG");
 
+        PrintStream console = System.out;
+        System.setOut(o);
+        print("PI"); print("A"); print("B");print("LOG");
+        System.setOut(console);
+        print("PI"); print("A"); print("B");print("LOG");
+        /////////////////////////////////////////////////////////////////////////////////////
+
+        //SCORE - USE THE REMAINING HALF OF THE DATA
+
+        for(int i = stringArray.length/2; i<stringArray.length;i++){
+            O[i-(stringArray.length/2)] = Integer.parseInt(stringArray[i]);
+        }
+        iters = 0;//reset
+        oldLogProb = -1000000;//reset
+
+        while(iters == 0||(iters<maxiters && hmm.getlogProb()>oldLogProb)){
+
+
+            System.out.println("\n ------------------SCORE ALPHA PASS----------------------");
+//            hmm.printA();
+//             hmm.printB();
+            alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+
+//            System.out.println("ALPHA ARRAY:\n" + Arrays.deepToString(alpha_pass).replace("], ", "]\n"));
+
+//            if(iters == 0) {
+            System.out.println("\n --------------SCORE BETA PASS-----------------------");
+            beta_pass = hmm.beta_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB());
+//              System.out.println("BETA ARRAY:\n" + Arrays.deepToString(beta_pass).replace("], ", "]\n"));
+
+//            }
+
+            System.out.println("\n -----------GAMMA PASS & RE-ESTIMATING--------------");
+            hmm.gammas(hmm.getUpdatedA(), hmm.getUpdatedB(), alpha_pass, beta_pass, O);
+            hmm.gamma_reestimate(O);
+
+            System.out.println("\n ---------------SCORE AFTER GAMMA PASS------------------");
+            hmm.updatelogProb(); //recalculate log prob
+
+//            hmm.printA();
+//            hmm.printB();
+//            hmm.printPI();
+
+            iters++;
+            logProbList[iters] = hmm.getlogProb();
+            // System.out.println(iters<maxiters);
+            // System.out.println(hmm.getlogProb()>oldLogProb);
+
+        }
+
+
+        console = System.out;
+        System.setOut(o);
+        System.out.println("TESTING AFTER TRAINING: \n");
+        print("PI"); print("A"); print("B");print("LOG");
+        System.setOut(console);
+        print("PI"); print("A"); print("B");print("LOG");
     }
 
 }
@@ -156,7 +216,7 @@ class HMM {
         this.updatedpi = new double[N]; //initial state distribution
         this.T = O.length;
         c = new double[T];
-        this.initalize();
+        this.initalize(); //run the INIT RANDOMIZATION PROCESS
         gamma = new double[T][N];
         digamma = new double[T][N][N];
         alpha_array = new double[T][N]; //initialize alpha
