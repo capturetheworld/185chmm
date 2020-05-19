@@ -1,19 +1,27 @@
 import java.io.IOException;
 import java.util.Arrays;
 import java.lang.Math;
+import java.io.File;
+
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import java.util.List;
+import java.util.ArrayList;
 
 
 
 public class HMMScaled {
-    private static int N = 2; //number of states
-    private static int M = 3; //number of observation symbols (count of possible observations to chose from)
+    private static int N = 30; //number of states
+    private static int M = 31; //number of observation symbols (count of possible observations to chose from)
     private static double[][] A = new double[N][N]; //OUTPUT transition matrix
     private static double[][] B = new double[N][M]; //OUTPUT observation matrix
     private static double[] pi = new double[N]; //OUTPUT initial state distribution
     private static double[][] alpha_pass;
     private static double[][] beta_pass;
     private static int iters = 0;
-    private static int maxiters = 21;
+    private static int maxiters = 30;
     private static int oldLogProb = -1000000;
     private static double[] logProbList = new double[maxiters+1];
 
@@ -53,9 +61,26 @@ public class HMMScaled {
 
     public static void main(String[] args) throws IOException {
 
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
 
-        int[] O = new int[]{0, 1, 0, 2}; //observation sequence
+        Path filePath = new File("src/output/CLUSTER912343210.txt").toPath();
+        Charset charset = Charset.defaultCharset();
+        List<String> stringList = Files.readAllLines(filePath, charset);
+        String[] stringArray = stringList.toArray(new String[]{});
+
+        int[] O = new int[stringArray.length/2+1]; //observation sequence
+
+
+        System.out.println(stringArray.length);
+
+        for(int i = 0; i<=stringArray.length/2;i++){
+            O[i] = Integer.parseInt(stringArray[i]);
+        }
+
+
+
+
 
 
         System.out.println("\n ************************ INIT ************************");
@@ -71,14 +96,14 @@ public class HMMScaled {
 //             hmm.printB();
             alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
 
-            System.out.println("ALPHA ARRAY:\n" + Arrays.deepToString(alpha_pass).replace("], ", "]\n"));
+//            System.out.println("ALPHA ARRAY:\n" + Arrays.deepToString(alpha_pass).replace("], ", "]\n"));
 
-            if(iters == 0) {
+//            if(iters == 0) {
                 System.out.println("\n --------------BETA PASS-----------------------");
                 beta_pass = hmm.beta_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB());
-              System.out.println("BETA ARRAY:\n" + Arrays.deepToString(beta_pass).replace("], ", "]\n"));
+//              System.out.println("BETA ARRAY:\n" + Arrays.deepToString(beta_pass).replace("], ", "]\n"));
 
-            }
+//            }
 
             System.out.println("\n -----------GAMMA PASS & RE-ESTIMATING--------------");
             hmm.gammas(hmm.getUpdatedA(), hmm.getUpdatedB(), alpha_pass, beta_pass, O);
@@ -329,7 +354,7 @@ class HMM {
                     //System.out.println("K IS " + k);
                     if (O[t] == k) {
                         numer = numer + this.gamma[t][j];
-                       System.out.println("numer2 " + numer);
+                       //System.out.println("numer2 " + numer);
                     }
                     denom = denom + this.gamma[t][j];
                     //System.out.println("denom2 " + denom);
