@@ -137,56 +137,73 @@ public class HMMScaled {
         print("PI"); print("A"); print("B");print("LOG");
         /////////////////////////////////////////////////////////////////////////////////////
 
-        //SCORE - USE THE REMAINING HALF OF THE DATA
+        //SCORE - USE THE REMAINING DATA
 
         for(int i = OPCODE_COUNT; i<OPCODE_COUNT;i++){
             O[i-(OPCODE_COUNT)] = Integer.parseInt(stringArray[i]);
         }
-        iters = 0;//reset
-        oldLogProb = -1000000;//reset
-
-        while(iters == 0||(iters<maxiters && hmm.getlogProb()>oldLogProb)){
 
 
-            System.out.println("\n ------------------SCORE ALPHA PASS----------------------");
-//            hmm.printA();
-//             hmm.printB();
-            alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
-
-//            System.out.println("ALPHA ARRAY:\n" + Arrays.deepToString(alpha_pass).replace("], ", "]\n"));
-
-//            if(iters == 0) {
-            System.out.println("\n --------------SCORE BETA PASS-----------------------");
-            beta_pass = hmm.beta_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB());
-//              System.out.println("BETA ARRAY:\n" + Arrays.deepToString(beta_pass).replace("], ", "]\n"));
-
-//            }
-
-            System.out.println("\n -----------GAMMA PASS & RE-ESTIMATING--------------");
-            hmm.gammas(hmm.getUpdatedA(), hmm.getUpdatedB(), alpha_pass, beta_pass, O);
-            hmm.gamma_reestimate(O);
-
-            System.out.println("\n ---------------SCORE AFTER GAMMA PASS------------------");
-            hmm.updatelogProb(); //recalculate log prob
-
-//            hmm.printA();
-//            hmm.printB();
-//            hmm.printPI();
-
-            iters++;
-            logProbList[iters] = hmm.getlogProb();
-            // System.out.println(iters<maxiters);
-            // System.out.println(hmm.getlogProb()>oldLogProb);
-
-        }
-
-
+        System.out.println("\n ------------------SCORING OBSERVATION 1 (FROM LATER OPCODES EXISTING FAMILY) ----------------------");
+        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.updatelogProb();
+        System.out.println(hmm.getlogProb());
         console = System.out;
         System.setOut(o);
-        System.out.println("TESTING AFTER TRAINING: \n");
-        print("PI"); print("A"); print("B");print("LOG");
+        System.out.println("\n ------------------SCORING OBSERVATION 1 (FROM LATER OPCODES EXISTING FAMILY) ----------------------");
+        System.out.println(hmm.getlogProb());
         System.setOut(console);
-        print("PI"); print("A"); print("B");print("LOG");
+
+        //SCORE - RANDOM FAMILY 2
+
+        System.out.println("\n ------------------SCORING OBSERVATION 2 DIFFERENT FAMILY ----------------------");
+        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.updatelogProb();
+        System.out.println(hmm.getlogProb());
+        console = System.out;
+        System.setOut(o);
+        System.out.println("\n ------------------SCORING OBSERVATION 2 DIFFERENT FAMILY ----------------------");
+        System.out.println(hmm.getlogProb());
+        System.setOut(console);
+
+
+        //SCORE - RANDOM FAMILY 3
+        System.out.println("\n ------------------SCORING OBSERVATION 3 DIFFERENT FAMILY ----------------------");
+        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.updatelogProb();
+        System.out.println(hmm.getlogProb());
+        console = System.out;
+        System.setOut(o);
+        System.out.println("\n ------------------SCORING OBSERVATION 3 DIFFERENT FAMILY ----------------------");
+        System.out.println(hmm.getlogProb());
+        System.setOut(console);
+
+
+
+        //SCORE - RANDOM FAMILY 4
+        System.out.println("\n ------------------SCORING OBSERVATION 4 DIFFERENT FAMILY ----------------------");
+        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.updatelogProb();
+        System.out.println(hmm.getlogProb());
+        console = System.out;
+        System.setOut(o);
+        System.out.println("\n ------------------SCORING OBSERVATION 4 DIFFERENT FAMILY ----------------------");
+        System.out.println(hmm.getlogProb());
+        System.setOut(console);
+
+
+        //SCORE - RANDOM FAMILY 4
+        System.out.println("\n ------------------SCORING OBSERVATION 5 DIFFERENT FAMILY ----------------------");
+        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.updatelogProb();
+        System.out.println(hmm.getlogProb());
+        console = System.out;
+        System.setOut(o);
+        System.out.println("\n ------------------SCORING OBSERVATION 5 DIFFERENT FAMILY ----------------------");
+        System.out.println(hmm.getlogProb());
+        System.setOut(console);
+
+
     }
 
 }
