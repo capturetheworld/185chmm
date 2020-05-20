@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 import os
 import itertools
 
@@ -19,7 +17,7 @@ def frequency(opcode_file, family_count):
 def join_together(opcode_file):
     opened_file = open(opcode_file, 'r')
     # writing_file = open('output/USELESS.txt', 'a')
-    write_symbols = open('output/zbot.txt', 'a')
+    write_symbols = open('output/CLUSTERnewavr.txt', 'a')
     lines = opened_file.read().splitlines()
     for line in lines:
         # writing_file.write(str(line)+'\n')
@@ -35,7 +33,7 @@ def join_together(opcode_file):
 
 
 def print_out():
-    f = open('output/zbot.csv', 'w+')
+    f = open('output/CLUSTERnewavr.csv', 'w+')
     for opcode in truncated_opcode_family:
         f.write(str(opcode) + ',')
     f.write('\n')
@@ -47,7 +45,7 @@ def print_out():
     f.close()
 
 
-parent_dir = 'malicia/zbot'
+parent_dir = 'malicia/CLUSTERnewavr'
 for (root, dirs, files) in os.walk(parent_dir, topdown=False):
     family_count = {}
     print ('===================================================================')

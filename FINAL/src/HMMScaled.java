@@ -63,6 +63,8 @@ public class HMMScaled {
 
 
 
+
+
     public static void main(String[] args) throws IOException {
         PrintStream o = new PrintStream(new File("src/output/HMM-ZBOT.txt"));
 
@@ -74,7 +76,7 @@ public class HMMScaled {
         List<String> stringList = Files.readAllLines(filePath, charset);
         String[] stringArray = stringList.toArray(new String[]{});
 
-        int[] O = new int[stringArray.length/2]; //observation sequence
+        int[] O = new int[OPCODE_COUNT]; //observation sequence
 
 
         System.out.println(stringArray.length);
@@ -82,9 +84,6 @@ public class HMMScaled {
         for(int i = 0; i<OPCODE_COUNT;i++){
             O[i] = Integer.parseInt(stringArray[i]);
         }
-
-
-
 
 
 
@@ -156,8 +155,20 @@ public class HMMScaled {
 
         //SCORE - RANDOM FAMILY 2
 
+         filePath = new File("src/testing/cleaman.txt").toPath();
+         charset = Charset.defaultCharset();
+         stringList = Files.readAllLines(filePath, charset);
+         stringArray = stringList.toArray(new String[]{});
+
+        int[] O2 = new int[OPCODE_COUNT]; //observation sequence
+
+        for(int i = 0; i<OPCODE_COUNT;i++){
+            O2[i] = Integer.parseInt(stringArray[i]);
+        }
+
+
         System.out.println("\n ------------------SCORING OBSERVATION 2 DIFFERENT FAMILY ----------------------");
-        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        alpha_pass = hmm.alpha_pass(O2, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
         hmm.updatelogProb();
         System.out.println(hmm.getlogProb());
         console = System.out;
@@ -168,8 +179,19 @@ public class HMMScaled {
 
 
         //SCORE - RANDOM FAMILY 3
+        filePath = new File("src/testing/CLUSTERnewavr.txt").toPath();
+        charset = Charset.defaultCharset();
+        stringList = Files.readAllLines(filePath, charset);
+        stringArray = stringList.toArray(new String[]{});
+
+        int[] O3 = new int[OPCODE_COUNT]; //observation sequence
+
+        for(int i = 0; i<OPCODE_COUNT;i++){
+            O3[i] = Integer.parseInt(stringArray[i]);
+        }
+
         System.out.println("\n ------------------SCORING OBSERVATION 3 DIFFERENT FAMILY ----------------------");
-        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        alpha_pass = hmm.alpha_pass(O3, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
         hmm.updatelogProb();
         System.out.println(hmm.getlogProb());
         console = System.out;
@@ -181,8 +203,18 @@ public class HMMScaled {
 
 
         //SCORE - RANDOM FAMILY 4
+        filePath = new File("src/testing/CLUSTERpositivtkninua.txt").toPath();
+        charset = Charset.defaultCharset();
+        stringList = Files.readAllLines(filePath, charset);
+        stringArray = stringList.toArray(new String[]{});
+
+        int[] O4 = new int[OPCODE_COUNT]; //observation sequence
+
+        for(int i = 0; i<OPCODE_COUNT;i++){
+            O4[i] = Integer.parseInt(stringArray[i]);
+        }
         System.out.println("\n ------------------SCORING OBSERVATION 4 DIFFERENT FAMILY ----------------------");
-        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        alpha_pass = hmm.alpha_pass(O4, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
         hmm.updatelogProb();
         System.out.println(hmm.getlogProb());
         console = System.out;
@@ -192,9 +224,21 @@ public class HMMScaled {
         System.setOut(console);
 
 
+        //SCORE - RANDOM FAMILY 5
         //SCORE - RANDOM FAMILY 4
+        filePath = new File("src/testing/cridex.txt").toPath();
+        charset = Charset.defaultCharset();
+        stringList = Files.readAllLines(filePath, charset);
+        stringArray = stringList.toArray(new String[]{});
+
+        int[] O5 = new int[OPCODE_COUNT]; //observation sequence
+
+        for(int i = 0; i<OPCODE_COUNT;i++){
+            O5[i] = Integer.parseInt(stringArray[i]);
+        }
+
         System.out.println("\n ------------------SCORING OBSERVATION 5 DIFFERENT FAMILY ----------------------");
-        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        alpha_pass = hmm.alpha_pass(O5, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
         hmm.updatelogProb();
         System.out.println(hmm.getlogProb());
         console = System.out;
