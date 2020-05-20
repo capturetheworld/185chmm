@@ -16,8 +16,9 @@ import java.io.File;  // Import the File class
 
 
 public class HMMScaled {
-    private static int N = 30; //number of states
+    private static int N = 5; //number of states
     private static int M = 31; //number of observation symbols (count of possible observations to chose from)
+    private final static int OPCODE_COUNT = 1000;
     private static double[][] A = new double[N][N]; //OUTPUT transition matrix
     private static double[][] B = new double[N][M]; //OUTPUT observation matrix
     private static double[] pi = new double[N]; //OUTPUT initial state distribution
@@ -63,12 +64,12 @@ public class HMMScaled {
 
 
     public static void main(String[] args) throws IOException {
-        PrintStream o = new PrintStream(new File("src/output/HMM-CLUSTER912343210.txt"));
+        PrintStream o = new PrintStream(new File("src/output/HMM-ZBOT.txt"));
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
 
-        Path filePath = new File("src/output/CLUSTER912343210.txt").toPath();
+        Path filePath = new File("src/output/zbot.txt").toPath();
         Charset charset = Charset.defaultCharset();
         List<String> stringList = Files.readAllLines(filePath, charset);
         String[] stringArray = stringList.toArray(new String[]{});
@@ -78,7 +79,7 @@ public class HMMScaled {
 
         System.out.println(stringArray.length);
 
-        for(int i = 0; i<stringArray.length/2;i++){
+        for(int i = 0; i<OPCODE_COUNT;i++){
             O[i] = Integer.parseInt(stringArray[i]);
         }
 
@@ -138,8 +139,8 @@ public class HMMScaled {
 
         //SCORE - USE THE REMAINING HALF OF THE DATA
 
-        for(int i = stringArray.length/2; i<stringArray.length;i++){
-            O[i-(stringArray.length/2)] = Integer.parseInt(stringArray[i]);
+        for(int i = OPCODE_COUNT; i<OPCODE_COUNT;i++){
+            O[i-(OPCODE_COUNT)] = Integer.parseInt(stringArray[i]);
         }
         iters = 0;//reset
         oldLogProb = -1000000;//reset
