@@ -16,9 +16,9 @@ import java.io.File;  // Import the File class
 
 
 public class HMMScaled {
-    private static int N = 18; //number of states
+    private static int N = 40; //number of states
     private static int M = 31; //number of observation symbols (count of possible observations to chose from)
-    private final static int OPCODE_COUNT = 50000;
+    private final static int OPCODE_COUNT = 100000;
     private static double[][] A = new double[N][N]; //OUTPUT transition matrix
     private static double[][] B = new double[N][M]; //OUTPUT observation matrix
     private static double[] pi = new double[N]; //OUTPUT initial state distribution
@@ -32,12 +32,12 @@ public class HMMScaled {
 
 
     public static void main(String[] args) throws IOException {
-        PrintStream o = new PrintStream(new File("src/output/HMM100-18-50000-zbot.txt"));
+        PrintStream o = new PrintStream(new File("src/output/HMM100-40-100000-smarthdd.txt"));
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
 
-        Path filePath = new File("src/output/zbot.txt").toPath();
+        Path filePath = new File("src/output/smarthdd.txt").toPath();
         Charset charset = Charset.defaultCharset();
         List<String> stringList = Files.readAllLines(filePath, charset);
         String[] stringArray = stringList.toArray(new String[]{});
