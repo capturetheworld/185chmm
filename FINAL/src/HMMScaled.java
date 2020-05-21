@@ -16,57 +16,23 @@ import java.io.File;  // Import the File class
 
 
 public class HMMScaled {
-    private static int N = 20; //number of states
+    private static int N = 18; //number of states
     private static int M = 31; //number of observation symbols (count of possible observations to chose from)
-    private final static int OPCODE_COUNT = 100000;
+    private final static int OPCODE_COUNT = 50000;
     private static double[][] A = new double[N][N]; //OUTPUT transition matrix
     private static double[][] B = new double[N][M]; //OUTPUT observation matrix
     private static double[] pi = new double[N]; //OUTPUT initial state distribution
     private static double[][] alpha_pass;
     private static double[][] beta_pass;
     private static int iters = 0;
-    private static int maxiters = 30;
+    private static int maxiters = 100;
     private static int oldLogProb = -1000000;
     private static double[] logProbList = new double[maxiters+1];
-
-    public static void print(String match){
-        switch (match) {
-            case "PI":
-                System.out.print(">>>>>>>>>>FINAL PI IS>>>>>>\n");
-                for (double v : pi) System.out.print("[" + v + " " + "]");
-                System.out.println(" ");
-                break;
-            case "A":
-                System.out.println(" ");
-                System.out.println(">>>>>>>>>>FINAL A IS>>>>>>");
-                System.out.println(Arrays.deepToString(A).replace("], ", "]\n"));
-                break;
-            case "B":
-                System.out.println(" ");
-                System.out.println(">>>>>>>>>>FINAL B IS>>>>>>");
-                System.out.println(Arrays.deepToString(B).replace("], ", "]\n"));
-                break;
-            case "LOG":
-                System.out.println(" ");
-                System.out.println(">>>>>>>>>>FINAL LOG IS>>>>>>");
-                System.out.println("[");
-                for (double v : logProbList) System.out.println("" + v + " " + ",");
-                System.out.println("]");
-                break;
-        }
-
-    }
-
-
-
-
-
-
 
 
 
     public static void main(String[] args) throws IOException {
-        PrintStream o = new PrintStream(new File("src/output/HMM-30-100000-ZBOT.txt"));
+        PrintStream o = new PrintStream(new File("src/output/HMM100-18-50000-zbot.txt"));
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
@@ -256,6 +222,42 @@ public class HMMScaled {
 
 
     }
+
+    public static void print(String match){
+        switch (match) {
+            case "PI":
+                System.out.print(">>>>>>>>>>FINAL PI IS>>>>>>\n");
+                for (double v : pi) System.out.print("[" + v + " " + "]");
+                System.out.println(" ");
+                break;
+            case "A":
+                System.out.println(" ");
+                System.out.println(">>>>>>>>>>FINAL A IS>>>>>>");
+                System.out.println(Arrays.deepToString(A).replace("], ", "]\n"));
+                break;
+            case "B":
+                System.out.println(" ");
+                System.out.println(">>>>>>>>>>FINAL B IS>>>>>>");
+                System.out.println(Arrays.deepToString(B).replace("], ", "]\n"));
+                break;
+            case "LOG":
+                System.out.println(" ");
+                System.out.println(">>>>>>>>>>FINAL LOG IS>>>>>>");
+                System.out.println("[");
+                for (double v : logProbList) System.out.println("" + v + " " + ",");
+                System.out.println("]");
+                break;
+        }
+
+    }
+
+
+
+
+
+
+
+
 
 }
 
