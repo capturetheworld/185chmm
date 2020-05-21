@@ -16,9 +16,9 @@ import java.io.File;  // Import the File class
 
 
 public class HMMScaled {
-    private static int N = 5; //number of states
+    private static int N = 20; //number of states
     private static int M = 31; //number of observation symbols (count of possible observations to chose from)
-    private final static int OPCODE_COUNT = 1000;
+    private final static int OPCODE_COUNT = 100000;
     private static double[][] A = new double[N][N]; //OUTPUT transition matrix
     private static double[][] B = new double[N][M]; //OUTPUT observation matrix
     private static double[] pi = new double[N]; //OUTPUT initial state distribution
@@ -66,7 +66,7 @@ public class HMMScaled {
 
 
     public static void main(String[] args) throws IOException {
-        PrintStream o = new PrintStream(new File("src/output/HMM-ZBOT.txt"));
+        PrintStream o = new PrintStream(new File("src/output/HMM-30-100000-ZBOT.txt"));
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
@@ -138,7 +138,7 @@ public class HMMScaled {
 
         //SCORE - USE THE REMAINING DATA
 
-        for(int i = OPCODE_COUNT; i<OPCODE_COUNT;i++){
+        for(int i = OPCODE_COUNT; i<OPCODE_COUNT*2;i++){
             O[i-(OPCODE_COUNT)] = Integer.parseInt(stringArray[i]);
         }
 
@@ -160,15 +160,19 @@ public class HMMScaled {
          stringList = Files.readAllLines(filePath, charset);
          stringArray = stringList.toArray(new String[]{});
 
-        int[] O2 = new int[OPCODE_COUNT]; //observation sequence
+        int[] O2 = new int[67041]; //observation sequence
+        hmm.setT(O2.length);
 
-        for(int i = 0; i<OPCODE_COUNT;i++){
-            O2[i] = Integer.parseInt(stringArray[i]);
+        //System.out.println("O2 length" + O2.length);
+
+        for(int j = 0; j<67041-1;j++){
+           // System.out.println(j);
+            O2[j] = Integer.parseInt(stringArray[j]);
         }
 
 
         System.out.println("\n ------------------SCORING OBSERVATION 2 DIFFERENT FAMILY ----------------------");
-        alpha_pass = hmm.alpha_pass(O2, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.alpha_pass(O2, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
         hmm.updatelogProb();
         System.out.println(hmm.getlogProb());
         console = System.out;
@@ -184,14 +188,15 @@ public class HMMScaled {
         stringList = Files.readAllLines(filePath, charset);
         stringArray = stringList.toArray(new String[]{});
 
-        int[] O3 = new int[OPCODE_COUNT]; //observation sequence
+        int[] O3 = new int[156741]; //observation sequence
 
-        for(int i = 0; i<OPCODE_COUNT;i++){
+        for(int i = 0; i<156741;i++){
             O3[i] = Integer.parseInt(stringArray[i]);
         }
+        hmm.setT(O3.length);
 
         System.out.println("\n ------------------SCORING OBSERVATION 3 DIFFERENT FAMILY ----------------------");
-        alpha_pass = hmm.alpha_pass(O3, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.alpha_pass(O3, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
         hmm.updatelogProb();
         System.out.println(hmm.getlogProb());
         console = System.out;
@@ -208,13 +213,14 @@ public class HMMScaled {
         stringList = Files.readAllLines(filePath, charset);
         stringArray = stringList.toArray(new String[]{});
 
-        int[] O4 = new int[OPCODE_COUNT]; //observation sequence
+        int[] O4 = new int[1000]; //observation sequence
 
-        for(int i = 0; i<OPCODE_COUNT;i++){
-            O4[i] = Integer.parseInt(stringArray[i]);
+        for(int i = 2000; i<3000;i++){
+            O4[i-2000] = Integer.parseInt(stringArray[i]);
         }
+        hmm.setT(O4.length);
         System.out.println("\n ------------------SCORING OBSERVATION 4 DIFFERENT FAMILY ----------------------");
-        alpha_pass = hmm.alpha_pass(O4, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.alpha_pass(O4, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
         hmm.updatelogProb();
         System.out.println(hmm.getlogProb());
         console = System.out;
@@ -231,14 +237,15 @@ public class HMMScaled {
         stringList = Files.readAllLines(filePath, charset);
         stringArray = stringList.toArray(new String[]{});
 
-        int[] O5 = new int[OPCODE_COUNT]; //observation sequence
+        int[] O5 = new int[10000]; //observation sequence
 
-        for(int i = 0; i<OPCODE_COUNT;i++){
-            O5[i] = Integer.parseInt(stringArray[i]);
+        for(int i = 32000; i<33000;i++){
+            O5[i-32000] = Integer.parseInt(stringArray[i]);
         }
+        hmm.setT(O5.length);
 
         System.out.println("\n ------------------SCORING OBSERVATION 5 DIFFERENT FAMILY ----------------------");
-        alpha_pass = hmm.alpha_pass(O5, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.alpha_pass(O5, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
         hmm.updatelogProb();
         System.out.println(hmm.getlogProb());
         console = System.out;
@@ -287,6 +294,7 @@ class HMM {
 
     }
 
+    public void setT(int toSet){this.T = toSet;alpha_array = new double[T][N];c = new double[T];}; //reset T for future observations and reset alpha array
     public double[][] getUpdatedA(){ return updatedA; }
     public double[][] getUpdatedB(){ return updatedB; }
     public double[] getUpdatedpi(){ return updatedpi; }
@@ -358,7 +366,7 @@ class HMM {
      *         int N;  //number of states
      */
     public double[][] alpha_pass(int[] O, double[][] a, double[][] b, double[] pi) {
-        //System.out.println("WITHIN ALPHA");
+        System.out.println("WITHIN ALPHA" + alpha_array.length +" WHAAT "+alpha_array[0].length);
 
         //System.out.println(Arrays.deepToString(a).replace("], ", "]\n"));
         //System.out.println(Arrays.deepToString(b).replace("], ", "]\n"));

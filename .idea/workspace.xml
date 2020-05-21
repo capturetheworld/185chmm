@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6e50c226-9ab1-407d-9ec5-ea5e26397cdd" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/FINAL/out/production/FINAL/HMMScaled.class" beforeDir="false" afterPath="$PROJECT_DIR$/FINAL/out/production/FINAL/HMMScaled.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FINAL/src/HMMScaled.java" beforeDir="false" afterPath="$PROJECT_DIR$/FINAL/src/HMMScaled.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FINAL/src/output/CLUSTER912343210.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FINAL/src/output/CLUSTER912343210.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FINAL/src/output/HMM-CLUSTER912343210.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FINAL/src/output/HMM-ZBOT.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FINAL/src/output/zeroaccess.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FINAL/src/output/zeroaccess.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FINAL/src/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/FINAL/src/preprocess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FINAL/src/output/HMM-ZBOT.txt" beforeDir="false" afterPath="$PROJECT_DIR$/FINAL/src/output/HMM-ZBOT.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
