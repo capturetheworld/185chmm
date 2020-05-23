@@ -1,7 +1,12 @@
 import os
 import itertools
+import random
 
 first_time = True
+
+base_folder = 'malicia'
+sub_folder = '/' + 'winwebsec' #family
+
 
 def frequency(opcode_file, family_count):
     f = open(opcode_file, 'r')
@@ -17,7 +22,7 @@ def frequency(opcode_file, family_count):
 def join_together(opcode_file):
     opened_file = open(opcode_file, 'r')
     # writing_file = open('output/USELESS.txt', 'a')
-    write_symbols = open('output/smarthdd.txt', 'a')
+    write_symbols = open('output'+sub_folder+'.txt', 'a')
     lines = opened_file.read().splitlines()
     for line in lines:
         # writing_file.write(str(line)+'\n')
@@ -30,10 +35,19 @@ def join_together(opcode_file):
     # writing_file.close()
     write_symbols.close()
 
+def randomize():
+    opened_file = open('output'+sub_folder+'.txt', 'r').readlines()
+    # writing_file = open('output/USELESS.txt', 'a')
+    write_random = open('output'+sub_folder+'-randomized.txt', 'w+')
+    random.shuffle(opened_file)
+    write_random.write(''.join(opened_file))
+
+    write_random.close()
+
 
 
 def print_out():
-    f = open('output/smarthdd.csv', 'w+')
+    f = open('output'+sub_folder+'.csv', 'w+')
     for opcode in truncated_opcode_family:
         f.write(str(opcode) + ',')
     f.write('\n')
@@ -45,7 +59,7 @@ def print_out():
     f.close()
 
 
-parent_dir = 'malicia/smarthdd'
+parent_dir = base_folder+sub_folder
 for (root, dirs, files) in os.walk(parent_dir, topdown=False):
     family_count = {}
     print ('===================================================================')
@@ -126,6 +140,8 @@ for (root, dirs, files) in os.walk(parent_dir, topdown=False):
         if '.txt' in name:
             join_together(full_path)
 
+    randomize()
     print_out()
+
 
 
