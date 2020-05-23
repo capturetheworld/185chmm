@@ -5,7 +5,7 @@ import random
 first_time = True
 
 base_folder = 'malicia'
-sub_folder = '/' + 'cutwail' #family
+sub_folder = '/' + 'spyeyeep' #family
 
 
 def frequency(opcode_file, family_count):
