@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.lang.Math;
 import java.io.File;
@@ -16,8 +17,9 @@ import java.io.File;  // Import the File class
 
 
 public class HMMScaled {
-    private static int N = 40; //number of states
+    private static int N = 2; //number of states
     private static int M = 31; //number of observation symbols (count of possible observations to chose from)
+
     private final static int OPCODE_COUNT = 100000;
     private static double[][] A = new double[N][N]; //OUTPUT transition matrix
     private static double[][] B = new double[N][M]; //OUTPUT observation matrix
@@ -25,31 +27,45 @@ public class HMMScaled {
     private static double[][] alpha_pass;
     private static double[][] beta_pass;
     private static int iters = 0;
-    private static int maxiters = 100;
+    private static int maxiters = 200;
     private static int oldLogProb = -1000000;
     private static double[] logProbList = new double[maxiters+1];
 
 
 
     public static void main(String[] args) throws IOException {
-        PrintStream o = new PrintStream(new File("src/output/HMM100-40-100000-smarthdd.txt"));
+        PrintStream o = new PrintStream(new File("src/output/HMM200-2-ITER5-100000-winwebsec.txt"));
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
 
-        Path filePath = new File("src/output/smarthdd.txt").toPath();
+        Path filePath = new File("src/output/winwebsec-randomized.txt").toPath();
         Charset charset = Charset.defaultCharset();
         List<String> stringList = Files.readAllLines(filePath, charset);
         String[] stringArray = stringList.toArray(new String[]{});
 
-        int[] O = new int[OPCODE_COUNT]; //observation sequence
+        ArrayList<Integer> training = new ArrayList<>();
+        ArrayList<Integer> testing = new ArrayList<>();
+
+        int[] O;// = new int[OPCODE_COUNT/5*4]; //observation sequence
+        int[] O1;// = new int[OPCODE_COUNT/5]; //observation sequence
 
 
         System.out.println(stringArray.length);
 
         for(int i = 0; i<OPCODE_COUNT;i++){
-            O[i] = Integer.parseInt(stringArray[i]);
+            if(i>=OPCODE_COUNT/5*4 && i<OPCODE_COUNT/5*5){
+                testing.add(Integer.parseInt(stringArray[i]));
+
+            }
+            else{
+                training.add(Integer.parseInt(stringArray[i]));
+            }
+            //O[i] = Integer.parseInt(stringArray[i]);
         }
+
+        O = training.stream().mapToInt(i -> i).toArray();
+        O1 = testing.stream().mapToInt(i -> i).toArray();
 
 
 
@@ -104,121 +120,132 @@ public class HMMScaled {
 
         //SCORE - USE THE REMAINING DATA
 
-        for(int i = OPCODE_COUNT; i<OPCODE_COUNT*2;i++){
-            O[i-(OPCODE_COUNT)] = Integer.parseInt(stringArray[i]);
-        }
+//        for(int i = OPCODE_COUNT; i<OPCODE_COUNT*2;i++){
+//            O2[i-(OPCODE_COUNT)] = Integer.parseInt(stringArray[i]);
+//        }
 
 
         System.out.println("\n ------------------SCORING OBSERVATION 1 (FROM LATER OPCODES EXISTING FAMILY) ----------------------");
-        alpha_pass = hmm.alpha_pass(O, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+        hmm.setT(O1.length);
+        alpha_pass = hmm.alpha_pass(O1, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
         hmm.updatelogProb();
         System.out.println(hmm.getlogProb());
         console = System.out;
         System.setOut(o);
         System.out.println("\n ------------------SCORING OBSERVATION 1 (FROM LATER OPCODES EXISTING FAMILY) ----------------------");
         System.out.println(hmm.getlogProb());
+        System.out.print("Diffference:");
+        System.out.println(logProbList[iters]-(hmm.getlogProb()));
         System.setOut(console);
+//
+//        //SCORE - RANDOM FAMILY 2
+//
+//         filePath = new File("src/testing/cleaman.txt").toPath();
+//         charset = Charset.defaultCharset();
+//         stringList = Files.readAllLines(filePath, charset);
+//         stringArray = stringList.toArray(new String[]{});
+//
+//        int[] O2 = new int[67041]; //observation sequence
+//        hmm.setT(O2.length);
+//
+//        //System.out.println("O2 length" + O2.length);
+//
+//        for(int j = 0; j<67041-1;j++){
+//           // System.out.println(j);
+//            O2[j] = Integer.parseInt(stringArray[j]);
+//        }
+//
+//
+//        System.out.println("\n ------------------SCORING OBSERVATION 2 DIFFERENT FAMILY ----------------------");
+//        hmm.alpha_pass(O2, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+//        hmm.updatelogProb();
+//        System.out.println(hmm.getlogProb());
+//        console = System.out;
+//        System.setOut(o);
+//        System.out.println("\n ------------------SCORING OBSERVATION 2 DIFFERENT FAMILY ----------------------");
+//        System.out.println(hmm.getlogProb());
+//        System.out.print("Diffference:");
+//        System.out.println(logProbList[iters]-(hmm.getlogProb()));
+//        System.setOut(console);
+//
+//
+//        //SCORE - RANDOM FAMILY 3
+//        filePath = new File("src/testing/CLUSTERnewavr.txt").toPath();
+//        charset = Charset.defaultCharset();
+//        stringList = Files.readAllLines(filePath, charset);
+//        stringArray = stringList.toArray(new String[]{});
+//
+//        int[] O3 = new int[156741]; //observation sequence
+//
+//        for(int i = 0; i<156741;i++){
+//            O3[i] = Integer.parseInt(stringArray[i]);
+//        }
+//        hmm.setT(O3.length);
+//
+//        System.out.println("\n ------------------SCORING OBSERVATION 3 DIFFERENT FAMILY ----------------------");
+//        hmm.alpha_pass(O3, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+//        hmm.updatelogProb();
+//        System.out.println(hmm.getlogProb());
+//        console = System.out;
+//        System.setOut(o);
+//        System.out.println("\n ------------------SCORING OBSERVATION 3 DIFFERENT FAMILY ----------------------");
+//        System.out.println(hmm.getlogProb());
+//        System.out.print("Diffference:");
+//        System.out.println(logProbList[iters]-(hmm.getlogProb()));
+//        System.setOut(console);
+//
+//
+//
+//        //SCORE - RANDOM FAMILY 4
+//        filePath = new File("src/testing/CLUSTERpositivtkninua.txt").toPath();
+//        charset = Charset.defaultCharset();
+//        stringList = Files.readAllLines(filePath, charset);
+//        stringArray = stringList.toArray(new String[]{});
+//
+//        int[] O4 = new int[1000]; //observation sequence
+//
+//        for(int i = 2000; i<3000;i++){
+//            O4[i-2000] = Integer.parseInt(stringArray[i]);
+//        }
+//        hmm.setT(O4.length);
+//        System.out.println("\n ------------------SCORING OBSERVATION 4 DIFFERENT FAMILY ----------------------");
+//        hmm.alpha_pass(O4, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+//        hmm.updatelogProb();
+//        System.out.println(hmm.getlogProb());
+//        console = System.out;
+//        System.setOut(o);
+//        System.out.println("\n ------------------SCORING OBSERVATION 4 DIFFERENT FAMILY ----------------------");
+//        System.out.println(hmm.getlogProb());
+//        System.out.print("Diffference:");
+//        System.out.println(logProbList[iters]-(hmm.getlogProb()));
+//        System.setOut(console);
 
-        //SCORE - RANDOM FAMILY 2
 
-         filePath = new File("src/testing/cleaman.txt").toPath();
-         charset = Charset.defaultCharset();
-         stringList = Files.readAllLines(filePath, charset);
-         stringArray = stringList.toArray(new String[]{});
-
-        int[] O2 = new int[67041]; //observation sequence
-        hmm.setT(O2.length);
-
-        //System.out.println("O2 length" + O2.length);
-
-        for(int j = 0; j<67041-1;j++){
-           // System.out.println(j);
-            O2[j] = Integer.parseInt(stringArray[j]);
-        }
-
-
-        System.out.println("\n ------------------SCORING OBSERVATION 2 DIFFERENT FAMILY ----------------------");
-        hmm.alpha_pass(O2, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
-        hmm.updatelogProb();
-        System.out.println(hmm.getlogProb());
-        console = System.out;
-        System.setOut(o);
-        System.out.println("\n ------------------SCORING OBSERVATION 2 DIFFERENT FAMILY ----------------------");
-        System.out.println(hmm.getlogProb());
-        System.setOut(console);
-
-
-        //SCORE - RANDOM FAMILY 3
-        filePath = new File("src/testing/CLUSTERnewavr.txt").toPath();
-        charset = Charset.defaultCharset();
-        stringList = Files.readAllLines(filePath, charset);
-        stringArray = stringList.toArray(new String[]{});
-
-        int[] O3 = new int[156741]; //observation sequence
-
-        for(int i = 0; i<156741;i++){
-            O3[i] = Integer.parseInt(stringArray[i]);
-        }
-        hmm.setT(O3.length);
-
-        System.out.println("\n ------------------SCORING OBSERVATION 3 DIFFERENT FAMILY ----------------------");
-        hmm.alpha_pass(O3, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
-        hmm.updatelogProb();
-        System.out.println(hmm.getlogProb());
-        console = System.out;
-        System.setOut(o);
-        System.out.println("\n ------------------SCORING OBSERVATION 3 DIFFERENT FAMILY ----------------------");
-        System.out.println(hmm.getlogProb());
-        System.setOut(console);
-
-
-
-        //SCORE - RANDOM FAMILY 4
-        filePath = new File("src/testing/CLUSTERpositivtkninua.txt").toPath();
-        charset = Charset.defaultCharset();
-        stringList = Files.readAllLines(filePath, charset);
-        stringArray = stringList.toArray(new String[]{});
-
-        int[] O4 = new int[1000]; //observation sequence
-
-        for(int i = 2000; i<3000;i++){
-            O4[i-2000] = Integer.parseInt(stringArray[i]);
-        }
-        hmm.setT(O4.length);
-        System.out.println("\n ------------------SCORING OBSERVATION 4 DIFFERENT FAMILY ----------------------");
-        hmm.alpha_pass(O4, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
-        hmm.updatelogProb();
-        System.out.println(hmm.getlogProb());
-        console = System.out;
-        System.setOut(o);
-        System.out.println("\n ------------------SCORING OBSERVATION 4 DIFFERENT FAMILY ----------------------");
-        System.out.println(hmm.getlogProb());
-        System.setOut(console);
-
-
-        //SCORE - RANDOM FAMILY 5
-        //SCORE - RANDOM FAMILY 4
-        filePath = new File("src/testing/cridex.txt").toPath();
-        charset = Charset.defaultCharset();
-        stringList = Files.readAllLines(filePath, charset);
-        stringArray = stringList.toArray(new String[]{});
-
-        int[] O5 = new int[10000]; //observation sequence
-
-        for(int i = 32000; i<33000;i++){
-            O5[i-32000] = Integer.parseInt(stringArray[i]);
-        }
-        hmm.setT(O5.length);
-
-        System.out.println("\n ------------------SCORING OBSERVATION 5 DIFFERENT FAMILY ----------------------");
-        hmm.alpha_pass(O5, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
-        hmm.updatelogProb();
-        System.out.println(hmm.getlogProb());
-        console = System.out;
-        System.setOut(o);
-        System.out.println("\n ------------------SCORING OBSERVATION 5 DIFFERENT FAMILY ----------------------");
-        System.out.println(hmm.getlogProb());
-        System.setOut(console);
+//        //SCORE - RANDOM FAMILY 5
+//        //SCORE - RANDOM FAMILY 4
+//        filePath = new File("src/testing/cridex.txt").toPath();
+//        charset = Charset.defaultCharset();
+//        stringList = Files.readAllLines(filePath, charset);
+//        stringArray = stringList.toArray(new String[]{});
+//
+//        int[] O5 = new int[10000]; //observation sequence
+//
+//        for(int i = 32000; i<33000;i++){
+//            O5[i-32000] = Integer.parseInt(stringArray[i]);
+//        }
+//        hmm.setT(O5.length);
+//
+//        System.out.println("\n ------------------SCORING OBSERVATION 5 DIFFERENT FAMILY ----------------------");
+//        hmm.alpha_pass(O5, hmm.getUpdatedA(), hmm.getUpdatedB(), hmm.getUpdatedpi());
+//        hmm.updatelogProb();
+//        System.out.println(hmm.getlogProb());
+//        console = System.out;
+//        System.setOut(o);
+//        System.out.println("\n ------------------SCORING OBSERVATION 5 DIFFERENT FAMILY ----------------------");
+//        System.out.println(hmm.getlogProb());
+//        System.out.print("Diffference:");
+//        System.out.println(logProbList[iters]-(hmm.getlogProb()));
+//        System.setOut(console);
 
 
     }
